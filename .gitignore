@@ -24,7 +24,7 @@ bin/
 local.properties
 target/
 tmp/
-build/
+
 out/
 site/
 /kubernetes/reports/
