@@ -1,4 +1,4 @@
-module github.com/Sumaid/besu-kubernetes/besu-operator
+module github.com/sambacha/besu-kubernetes/besu-operator
 
 go 1.13
 
