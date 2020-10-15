@@ -1,0 +1,92 @@
+# circle-ci configuration 
+# 2020.10.15 
+# basic config 
+
+# See https://circleci.com/blog/using-circleci-workflows-to-replicate-docker-hub-automated-builds/
+version: 2.1
+
+orbs:
+  kubernetes: circleci/kubernetes@0.4.0
+  aws-cli: circleci/aws-cli@0.1.22
+  aws-eks: sandbox/aws-eks@0.1.2
+
+workflows:
+  version: 2
+  build-and-push:
+    jobs:
+      - build-image
+      - unit-tests
+      - integration-tests:
+          requires:
+            - build-image
+            - unit-tests
+      - vulnerability-scan:
+          requires:
+            - build-image
+
+
+commands:
+  save_image:
+    description: "Save image"
+    steps:
+      - run:
+          name: "Save image"
+          command: |
+            mkdir -p /tmp/images
+            docker image save -o /tmp/images/${IMAGE_FILENAME}-${CIRCLE_SHA1}.tar ${IMAGE_NAME}:${CIRCLE_SHA1}
+  load_image:
+    description: "Load image"
+    steps:
+      - run:
+          name: "Load image"
+          command: docker load -i /tmp/images/${IMAGE_FILENAME}-${CIRCLE_SHA1}.tar
+
+
+executors:
+  ubuntu-machine:
+    environment:
+      # Test nodes for parallel runs
+      NUM_NODES: 2
+      # Size of k8s cluster.
+      NUM_WORKERS: 3
+      ENTERPRISE_IMAGE_NAME: splunk/splunk:edge
+      IMAGE_NAME: splunk/splunk-operator
+      IMAGE_FILENAME: splunk-operator
+    machine:
+      image: ubuntu-1604:202004-01
+    resource_class: xlarge
+  golang-builder:
+    environment:
+      IMAGE_NAME: splunk/splunk-operator
+      IMAGE_FILENAME: splunk-operator
+    working_directory: /opt/app-root/src/splunk-operator
+    docker:
+      - image: splunk/splunk-operator-builder:develop
+
+
+
+
+
+
+jobs:
+  build-image:
+    executor: golang-builder
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: 
+          name: Pull base image updates
+          command: docker pull registry.access.redhat.com/ubi8/ubi-minimal:latest
+      - run: 
+          name: Build splunk/splunk-operator image
+          command: operator-sdk build --verbose ${IMAGE_NAME}:${CIRCLE_SHA1}
+      - save_image
+      - persist_to_workspace:
+          name: Persist images to workspace
+          root: /tmp
+          paths:
+            - images
+      - store_artifacts:
+          name: Save images as artifacts
+          path: /tmp/images
