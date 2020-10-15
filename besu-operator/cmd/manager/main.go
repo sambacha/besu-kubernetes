@@ -13,9 +13,9 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/rest"
 
-	"github.com/Sumaid/besu-kubernetes/besu-operator/pkg/apis"
-	"github.com/Sumaid/besu-kubernetes/besu-operator/pkg/controller"
-	"github.com/Sumaid/besu-kubernetes/besu-operator/version"
+	"github.com/sambacha/besu-kubernetes/besu-operator/pkg/apis"
+	"github.com/sambacha/besu-kubernetes/besu-operator/pkg/controller"
+	"github.com/sambacha/besu-kubernetes/besu-operator/version"
 
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
