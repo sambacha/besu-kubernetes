@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/Sumaid/besu-kubernetes/besu-operator/pkg/controller/prometheus"
+	"github.com/sambacha/besu-kubernetes/besu-operator/pkg/controller/prometheus"
 )
 
 func init() {
