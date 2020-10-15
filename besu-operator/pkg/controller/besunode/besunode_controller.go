@@ -3,8 +3,8 @@ package besunode
 import (
 	"context"
 
-	hyperledgerv1alpha1 "github.com/Sumaid/besu-kubernetes/besu-operator/pkg/apis/hyperledger/v1alpha1"
-	"github.com/Sumaid/besu-kubernetes/besu-operator/pkg/resources"
+	hyperledgerv1alpha1 "github.com/sambacha/besu-kubernetes/besu-operator/pkg/apis/hyperledger/v1alpha1"
+	"github.com/sambacha/besu-kubernetes/besu-operator/pkg/resources"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
